@@ -41,6 +41,7 @@ class Blockchain {
         this.chain.push(newBlock);
     }
 
+    // To verify the integrity of the blockchain
     isChainValid(){
         for(let i = 1; i < this.chain.length; i++){
             const currentBlock = this.chain[i];
@@ -65,4 +66,15 @@ jizzyCoin.addBlock(new Block(2, "03/10/2022", { amount: 10 }));
 
 console.log('Is blockchain valid? ' + jizzyCoin.isChainValid());
 
+// Let's try and tamper with the blockchain!
+
+// Way 1: Change the data of the block
+jizzyCoin.chain[1].data = { amount: 100 };
+// Way 2: Recalculate the block's hash
+jizzyCoin.chain[1].hash = jizzyCoin.chain[1].calculateHash();
+
+console.log('Is blockchain valid? ' + jizzyCoin.isChainValid());
+
 //console.log(JSON.stringify(jizzyCoin, null, 4));
+
+// The blockchain is meant to add blocks to it, but never delete a block/change a block.
