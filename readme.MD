@@ -1,0 +1,1 @@
+A blockchain with proof-of-work consensus to verify the integrity and edit how fast new blocks can be added to the blockchain by changing the difficulty.

@@ -1,5 +1,16 @@
+// The blockchain is meant to add blocks to it, but never delete a block/change a block.
+
 // npm install --save crypto-js
 const SHA256 = require('crypto-js/sha256');
+
+class Transaction {
+
+    constructor(fromAddress, toAddress, amount){
+        this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
+        this.amount = amount;
+    }
+}
 
 class Block {
 
@@ -8,10 +19,9 @@ class Block {
         data: Any type of data that you want to associate with this block.
         previousHash: Contains the hash of the block before this one.
     */
-    constructor(index, timestamp, data, previousHash = '') {
-        this.index = index;
+    constructor(timestamp, transactions, previousHash = '') {
         this.timestamp = timestamp;
-        this.data = data;
+        this.transactions = transactions;
         this.previousHash = previousHash;
         this.hash = this.calculateHash();
         this.nonce = 0;
@@ -36,22 +46,36 @@ class Blockchain {
 
     constructor(){
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 5;
+        this.difficulty = 2;
+        this.pendingTransactions = [];
+        this.miningReward = 100;
     }
 
     createGenesisBlock(){
-        return new Block(0, "01/10/2022", "Genesis block", "0");
+        return new Block("01/10/2022", "Genesis block", "0");
     }
 
     getLatestBlock(){
         return this.chain[this.chain.length - 1];
     }
 
-    addBlock(newBlock){
-        newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.mineBlock(this.difficulty);
-        this.chain.push(newBlock);
+    minePendingTransactions(miningRewardAddress){
+        let block = new Block(Data.now(), this.pendingTransactions);
+        block.mineBlock(this.difficulty);
+
+        console.log('Block successfully mined!');
+        this.chain.push(block);
+
+        this.pendingTransactions = [
+            new Transaction(null, miningRewardAddress, this.miningReward)
+        ];
     }
+
+    createTransaction(transaction){
+        this.pendingTransactions.push(transaction);
+    }
+
+
 
     // To verify the integrity of the blockchain
     isChainValid(){
@@ -73,12 +97,3 @@ class Blockchain {
 }
 
 let jizzyCoin = new Blockchain();
-
-console.log('Mining block 1...');
-jizzyCoin.addBlock(new Block(1, "02/10/2022", { amount: 4 }));
-
-console.log('Mining block 2...');
-jizzyCoin.addBlock(new Block(2, "03/10/2022", { amount: 10 }));
-
-
-// The blockchain is meant to add blocks to it, but never delete a block/change a block.
