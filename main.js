@@ -14,7 +14,7 @@ class Transaction {
 
 class Block {
 
-    /*  index: Tells us where the block sits on the chain.
+    /*  
         timestamp: Tells us when the block was created.
         data: Any type of data that you want to associate with this block.
         previousHash: Contains the hash of the block before this one.
