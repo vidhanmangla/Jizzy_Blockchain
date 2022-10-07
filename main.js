@@ -75,7 +75,23 @@ class Blockchain {
         this.pendingTransactions.push(transaction);
     }
 
+    getBalanceOfAddress(address){
+        let balance = 0;
 
+        for(const block of this.chain){
+            for(const trans of block.transactions){
+                if(trans.fromAddress === address){
+                    balance -= trans.amount;
+                }
+
+                if(trans.toAddress === address){
+                    balance += trans.amount;
+                }
+            }
+        }
+
+        return balance;
+    }
 
     // To verify the integrity of the blockchain
     isChainValid(){
@@ -97,3 +113,16 @@ class Blockchain {
 }
 
 let jizzyCoin = new Blockchain();
+
+jizzyCoin.createTransaction(new Transaction('address1', 'address2', 100));
+jizzyCoin.createTransaction(new Transaction('address2', 'address1', 50));
+
+console.log('\n Starting the miner...');
+jizzyCoin.minePendingTransactions('vidhans-address');
+
+console.log('\nBalance of vidhan is', jizzyCoin.getBalanceOfAddress('vidhans-address'));
+
+console.log('\n Starting the miner again...');
+jizzyCoin.minePendingTransactions('vidhans-address');
+
+console.log('\nBalance of vidhan is', jizzyCoin.getBalanceOfAddress('vidhans-address'));
